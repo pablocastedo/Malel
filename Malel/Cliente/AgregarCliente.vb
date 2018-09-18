@@ -118,5 +118,6 @@
     Private Sub mod_combo()
         cmbCategoria.SelectedIndex = 1
         'acaes
+        'cambios prueba
     End Sub
 End Class
