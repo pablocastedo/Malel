@@ -117,6 +117,6 @@
 
     Private Sub mod_combo()
         cmbCategoria.SelectedIndex = 1
-
+        'acaes
     End Sub
 End Class
