@@ -1,26 +1,11 @@
 ﻿Public Class AgregarCliente
 
-
-    Dim stringConexion As String = "Data Source=DESKTOP-IMS6DKK\SQLEXPRESS;Initial Catalog=Malel;Integrated Security=True"
-
     Private Function conectarBD(ByVal nombreTabla As String)
-
         Dim tabla As New DataTable
-        Dim cmd As New SqlClient.SqlCommand
-        Dim conexion As New SqlClient.SqlConnection
-        Try
-            conexion.ConnectionString = stringConexion
-            conexion.Open()
-            cmd.Connection = conexion
-            cmd.CommandType = CommandType.Text
-            cmd.CommandText = "select * from " & nombreTabla
-            tabla.Load(cmd.ExecuteReader)
-        Catch
-        Finally
-            conexion.Close()
-        End Try
+        Dim consulta As String = "select * from " & nombreTabla
+        Dim conexion As New conexion
+        tabla = conexion.executeReader(consulta)
         Return tabla
-
     End Function
 
     Private Sub cmdAtras_Click(sender As Object, e As EventArgs) Handles cmdAtras.Click
@@ -42,66 +27,44 @@
     End Sub
 
     Private Sub AgregarCliente_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
         cargarCombo(cmbImportancia, conectarBD("Importancia"), "id_importancia", "descripcion")
         cargarCombo(cmbCategoria, conectarBD("CategoriaNegocio"), "id_categoria", "categoria")
-
         cargarCombo(cmbVendedor, conectarBD("Vendedor"), "legajo", "nomape")
         cargarCombo(cmbEstado, conectarBD("EstadoCliente"), "id_estado", "descripcion")
         cmbCategoria.SelectedIndex = -1
         cmbImportancia.SelectedIndex = -1
         cmbVendedor.SelectedIndex = -1
         cmbEstado.SelectedIndex = -1
-
-
     End Sub
 
     Private Sub cmdGuardar_Click(sender As Object, e As EventArgs) Handles cmdGuardar.Click
-        Dim cmd As New SqlClient.SqlCommand
-        Dim cmd2 As New SqlClient.SqlCommand
-        Dim cmd3 As New SqlClient.SqlCommand
-
+        Dim consulta As String
+        Dim consulta2 As String
+        Dim consulta3 As String
+        Dim conexion As New conexion
         Dim tabla As New DataTable
-        Dim conexion As New SqlClient.SqlConnection
         Try
-            conexion.ConnectionString = stringConexion
-            conexion.Open()
-
-            cmd.Connection = conexion
-            cmd2.Connection = conexion
-            cmd3.Connection = conexion
-
-
             If validarDatosCliente() = True Then
 
                 If MsgBox("¿Registrar nuevo cliente?", vbYesNo, "Aviso") = MsgBoxResult.Yes Then
-                    cmd.CommandType = CommandType.Text
-                    cmd.CommandText = "insert into Encargado values ('" & txtNombreEncargado.Text & "','" & txtHorarioEncargado.Text & "','" & txtTelefonoEncargado.Text & "')"
-                    cmd.ExecuteNonQuery()
-                    cmd2.CommandType = CommandType.Text
-                    cmd3.CommandType = CommandType.Text
-                    cmd3.CommandText = "select MAX(id_encargado) as 'id_encargado' from Encargado"
+                    consulta = "insert into Encargado values ('" & txtNombreEncargado.Text & "','" & txtHorarioEncargado.Text & "','" & txtTelefonoEncargado.Text & "')"
+                    conexion.executeNonQuery(consulta)
+                    consulta3 = "select MAX(id_encargado) as 'id_encargado' from Encargado"
                     Dim tabla2 As New DataTable
-                    tabla2.Load(cmd3.ExecuteReader)
+                    tabla2 = conexion.executeReader(consulta3)
                     Dim id_enc As Integer
                     If tabla2.Rows.Count > 0 Then
                         id_enc = tabla2.Rows.Item(0).Item("id_encargado")
-                        cmd2.CommandText = "insert into Cliente values('" & txtNombreNegocio.Text & "','" & txtDireccion.Text & "','" & txtTelefonoNegocio.Text & "','" & txtHorarioNegocio.Text & "','" & txtMail.Text & "','" & txtObservaciones.Text & "','" & Convert.ToDateTime(txtfecha.Text) & "', " & id_enc & ", " & cmbCategoria.SelectedValue & "," & cmbEstado.SelectedValue & "," & cmbVendedor.SelectedValue & "," & cmbImportancia.SelectedValue & ")"
-                        cmd2.ExecuteNonQuery()
-                        conexion.Close()
+                        consulta2 = "insert into Cliente values('" & txtNombreNegocio.Text & "','" & txtDireccion.Text & "','" & txtTelefonoNegocio.Text & "','" & txtHorarioNegocio.Text & "','" & txtMail.Text & "','" & txtObservaciones.Text & "','" & Convert.ToDateTime(txtfecha.Text) & "', " & id_enc & ", " & cmbCategoria.SelectedValue & "," & cmbEstado.SelectedValue & "," & cmbVendedor.SelectedValue & "," & cmbImportancia.SelectedValue & ")"
+                        conexion.executeNonQuery(consulta2)
                         MsgBox("Cliente registrado con éxito:" & vbCrLf & txtNombreNegocio.Text & MsgBoxStyle.Information)
-
                     End If
                 End If
             Else
                 MsgBox("Complete los datos obligatorios", vbExclamation, "Atención")
-
             End If
-
         Catch ex As Exception
             MsgBox("ERROR" & vbCrLf & ex.Message)
-        Finally
-            conexion.Close()
         End Try
     End Sub
 
@@ -119,5 +82,26 @@
         cmbCategoria.SelectedIndex = 1
         'acaes
         'cambios prueba
+    End Sub
+
+    Public Sub New(ByVal nombre As String, ByVal direccion As String, ByVal telefono As String, ByVal email As String,
+                   ByVal horario As String, ByVal cmbCatIndex As Integer, ByVal cmbImpIndex As Integer, ByVal cmbVenIndex As Integer,
+                   ByVal cmbEstIndex As Integer, ByVal encargado As String, ByVal telefonoEnc As String, ByVal horarioEnc As String)
+        InitializeComponent()
+        txtNombreNegocio.Text = nombre
+        txtDireccion.Text = direccion
+        txtTelefonoNegocio.Text = telefono
+        txtMail.Text = email
+        txtHorarioNegocio.Text = horario
+        cmbCategoria.SelectedIndex = cmbCatIndex
+        cmbImportancia.SelectedIndex = cmbImpIndex
+        cmbVendedor.SelectedIndex = cmbVenIndex
+        cmbEstado.SelectedIndex = cmbEstIndex
+        txtNombreEncargado.Text = encargado
+        txtTelefonoEncargado.Text = telefonoEnc
+        txtHorarioEncargado.Text = horarioEnc
+    End Sub
+    Public Sub New()
+        InitializeComponent()
     End Sub
 End Class

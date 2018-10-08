@@ -84,6 +84,7 @@
     <Compile Include="Cliente\BuscarCliente.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="DataAccess\conexion.vb" />
     <Compile Include="Gastos\AgragarGastos.Designer.vb">
       <DependentUpon>AgragarGastos.vb</DependentUpon>
     </Compile>

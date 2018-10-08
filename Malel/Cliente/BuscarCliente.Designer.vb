@@ -44,6 +44,7 @@ Partial Class BuscarCliente
         '
         Me.grillaCliente.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.grillaCliente.Location = New System.Drawing.Point(26, 180)
+        Me.grillaCliente.MultiSelect = False
         Me.grillaCliente.Name = "grillaCliente"
         Me.grillaCliente.Size = New System.Drawing.Size(1052, 364)
         Me.grillaCliente.TabIndex = 0
@@ -189,7 +190,7 @@ Partial Class BuscarCliente
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(813, 565)
+        Me.ClientSize = New System.Drawing.Size(810, 587)
         Me.Controls.Add(Me.cmdConsultarCliente)
         Me.Controls.Add(Me.cmbEstado)
         Me.Controls.Add(Me.rbnEstado)
